@@ -3,32 +3,28 @@ class UsersController < ApplicationController
 	 before_action :correct_user, only: [:edit, :update]
 	 before_action :admin_user,     only: :destroy
 
-
-  private
-
-    def user_params
-      params.require(:user).permit(:name, :email, :password,
-                                   :password_confirmation)
+private
+	def user_params
+		params.require(:user).permit(:name, :email, :password, :password_confirmation)
 	end
 
-
-    def signed_in_user
-      unless signed_in?
-        store_location
-        redirect_to signin_url, notice: "Please sign in."
-      end
-    end
-
-    def correct_user
-      @user = User.find(params[:id])
-      redirect_to(root_url) unless current_user?(@user)
+	def signed_in_user
+		unless signed_in?
+			store_location
+			redirect_to signin_url, notice: "Please sign in."
+		end
 	end
 
-	 def admin_user
-      redirect_to(root_url) unless current_user.admin?
-	 end
+	def correct_user
+		@user = User.find(params[:id])
+		redirect_to(root_url) unless current_user?(@user)
+	end
 
-  public
+	def admin_user
+		redirect_to(root_url) unless current_user.admin?
+	end
+
+public
     def index
 		@users = User.paginate(page: params[:page])
 	end
@@ -49,14 +45,14 @@ class UsersController < ApplicationController
 
 
 	def create
-	  @user = User.new(user_params)    # Not the final implementation!
-	  if @user.save
-		sign_in @user
-		redirect_to @user
-		flash[:success] = "Welcome to the Sample App!"
-	  else
-		render 'new'
-	  end
+		@user = User.new(user_params)
+		if @user.save
+			sign_in @user
+			redirect_to @user
+			flash[:success] = "Welcome to the Sample App!"
+		else
+			render 'new'
+		end
 	end
 
 	def edit
